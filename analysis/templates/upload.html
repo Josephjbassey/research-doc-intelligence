@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Upload — Research Doc Intelligence{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto text-center pt-8">
+
+  <h1 class="font-display text-4xl leading-tight mb-3">
+    Turn raw transcripts into <span class="quote-highlight">structured findings</span>
+  </h1>
+  <p class="text-ink-muted mb-10 font-body">
+    Upload a few interview transcripts or research notes. Get themes, evidence,
+    and cross-document synthesis back in minutes.
+  </p>
+
+  <form method="post" action="/upload/" enctype="multipart/form-data"
+        class="text-left">
+    {% csrf_token %}
+
+    <label for="file-input"
+      class="block border-2 border-dashed border-rule rounded-lg bg-white
+             px-6 py-14 text-center cursor-pointer transition-colors
+             hover:border-ink-muted"
+      ondragover="event.preventDefault(); this.classList.add('border-highlight')"
+      ondragleave="this.classList.remove('border-highlight')"
+      ondrop="this.classList.remove('border-highlight')">
+      <div class="font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+        .txt or .docx — up to 10 files
+      </div>
+      <div class="font-body text-ink">
+        Drop documents here, or <span class="underline">browse</span>
+      </div>
+      <input id="file-input" type="file" name="documents" multiple
+             accept=".txt,.docx" class="hidden"
+             onchange="document.getElementById('file-list').textContent = [...this.files].map(f => f.name).join(', ') || 'No files selected'">
+    </label>
+
+    <p id="file-list" class="font-mono text-xs text-ink-muted mt-3">No files selected</p>
+
+    <button type="submit"
+      class="mt-8 w-full bg-ink text-paper font-body font-medium
+             py-3.5 rounded-lg transition-opacity hover:opacity-90">
+      Analyze documents →
+    </button>
+  </form>
+
+  <p class="font-mono text-xs text-ink-muted mt-6">
+    No account needed. Documents are processed for this session only.
+  </p>
+</div>
+{% endblock %}

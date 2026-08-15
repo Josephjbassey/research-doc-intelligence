@@ -1,6 +1,6 @@
 """
 Views for Research Doc Intelligence.
-Handles: upload, analysis pipeline, results display, docx export.
+Handles: upload (parse + chunk + analyze in one flow), results display, docx export.
 """
 
 import json
@@ -22,24 +22,22 @@ from .export import generate_report
 
 
 # ---------------------------------------------------------------------------
-# Upload
+# Upload + Analysis (single flow: upload → parse → chunk → extract → synthesize)
 # ---------------------------------------------------------------------------
 
 def index(request):
-    """Home page — upload form + list of past sessions."""
-    sessions = Session.objects.all()[:10]
-    return render(request, "analysis/index.html", {"sessions": sessions})
+    """Home page — upload form."""
+    return render(request, "upload.html")
 
 
 @require_POST
 def upload(request):
-    """Handle file uploads, create a session, parse and chunk documents."""
-    files = request.FILES.getlist("files")
+    """Handle file uploads, create a session, parse, chunk, and run full analysis."""
+    files = request.FILES.getlist("documents")
     if not files:
         return JsonResponse({"error": "No files uploaded."}, status=400)
 
     session_title = request.POST.get("title", "Untitled Analysis")
-
     session = Session.objects.create(title=session_title)
 
     for f in files:
@@ -56,7 +54,6 @@ def upload(request):
             word_count=len(text.split()),
         )
 
-        # Chunk the document
         chunks = chunk_text(text)
         for c in chunks:
             Chunk.objects.create(
@@ -66,32 +63,25 @@ def upload(request):
                 word_count=c.word_count,
             )
 
-    return redirect("analysis_detail", session_id=session.id)
+    # Run the full analysis pipeline immediately after upload
+    _run_analysis_pipeline(session)
+
+    return redirect("results", session_id=session.id)
 
 
 # ---------------------------------------------------------------------------
-# Analysis pipeline
+# Analysis pipeline (internal)
 # ---------------------------------------------------------------------------
 
-def analysis_detail(request, session_id):
-    """Show session overview with documents and trigger analysis."""
-    session = get_object_or_404(Session, id=session_id)
-    return render(request, "analysis/detail.html", {"session": session})
-
-
-@require_POST
-def run_analysis(request, session_id):
-    """Run the full analysis pipeline: per-chunk extraction → per-doc aggregation → synthesis."""
-    session = get_object_or_404(Session, id=session_id)
-
+def _run_analysis_pipeline(session):
+    """Run per-chunk extraction → per-doc aggregation → cross-document synthesis."""
     documents = list(session.documents.all())
     if not documents:
-        return JsonResponse({"error": "No documents in session."}, status=400)
+        return
 
     # --- Step 1: Per-chunk extraction ---
     for doc in documents:
         for chunk in doc.chunks.all():
-            # Skip if already extracted
             if hasattr(chunk, "extraction"):
                 continue
 
@@ -130,7 +120,6 @@ def run_analysis(request, session_id):
                 if ext.stance:
                     stances.append(ext.stance)
 
-        # Build a simple doc-level summary from themes
         theme_labels = [t.get("label", "") for t in all_themes if t.get("label")]
         summary = f"Document contains {len(all_themes)} themes across {doc.chunks.count()} chunks."
         if theme_labels:
@@ -159,7 +148,6 @@ def run_analysis(request, session_id):
         })
 
     # --- Step 3: Cross-document synthesis ---
-    # Only run if we have 2+ documents
     if len(documents) >= 2:
         user_prompt = SYNTHESIS_USER_TEMPLATE.format(
             num_docs=len(documents),
@@ -181,7 +169,6 @@ def run_analysis(request, session_id):
             },
         )
     else:
-        # Single document — create a minimal synthesis
         Synthesis.objects.update_or_create(
             session=session,
             defaults={
@@ -191,8 +178,6 @@ def run_analysis(request, session_id):
             },
         )
 
-    return redirect("results", session_id=session.id)
-
 
 # ---------------------------------------------------------------------------
 # Results
@@ -201,21 +186,10 @@ def run_analysis(request, session_id):
 def results(request, session_id):
     """Display full analysis results."""
     session = get_object_or_404(Session, id=session_id)
-
-    # Build per-document data for the template
-    docs_data = []
-    for doc in session.documents.all():
-        doc_summary = getattr(doc, "summary", None)
-        docs_data.append({
-            "doc": doc,
-            "summary": doc_summary,
-        })
-
     synthesis = getattr(session, "synthesis", None)
 
-    return render(request, "analysis/results.html", {
+    return render(request, "results.html", {
         "session": session,
-        "docs_data": docs_data,
         "synthesis": synthesis,
     })
 
@@ -224,11 +198,10 @@ def results(request, session_id):
 # Export
 # ---------------------------------------------------------------------------
 
-def export_docx(request, session_id):
+def export_report(request, session_id):
     """Generate and download a .docx report."""
     session = get_object_or_404(Session, id=session_id)
 
-    # Build the data structure expected by generate_report
     documents_data = []
     for doc in session.documents.all():
         doc_summary = getattr(doc, "summary", None)

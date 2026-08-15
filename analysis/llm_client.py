@@ -9,10 +9,21 @@ Handles:
 import hashlib
 import json
 import os
+import socket
 from pathlib import Path
 
 import requests
 from decouple import config
+
+# ---------------------------------------------------------------------------
+# Force IPv4 — this machine has no IPv6 route, but urllib3 tries IPv6 first.
+# ---------------------------------------------------------------------------
+import urllib3.util.connection as urllib3_cn
+
+def _allowed_gai_family():
+    return socket.AF_INET
+
+urllib3_cn.allowed_gai_family = _allowed_gai_family
 
 # ---------------------------------------------------------------------------
 # Configuration

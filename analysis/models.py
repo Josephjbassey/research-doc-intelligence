@@ -44,6 +44,22 @@ class Document(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def filename(self):
+        return self.title
+
+    @property
+    def extraction(self):
+        """Aggregated extraction data for template rendering."""
+        summary = getattr(self, "summary", None)
+        if summary:
+            return {
+                "themes": summary.all_themes,
+                "stance": summary.stance,
+                "flags": summary.all_flags,
+            }
+        return {"themes": [], "stance": "", "flags": []}
+
 
 class Chunk(models.Model):
     """A text chunk split from a document for LLM processing."""

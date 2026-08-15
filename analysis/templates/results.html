@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Results — Research Doc Intelligence{% endblock %}
+
+{% block content %}
+<div class="flex items-start justify-between mb-8 pb-6 border-b border-rule">
+  <div>
+    <h1 class="font-display text-3xl">Synthesis</h1>
+    <p class="font-mono text-xs text-ink-muted mt-1">
+      {{ session.documents.count }} document{{ session.documents.count|pluralize }} analyzed
+    </p>
+  </div>
+  <a href="{% url 'export_report' session.id %}"
+     class="font-mono text-xs uppercase tracking-wider border border-ink px-4 py-2.5
+            rounded-md hover:bg-ink hover:text-paper transition-colors">
+    Export report ↓
+  </a>
+</div>
+
+<div class="grid grid-cols-[180px_1fr] gap-10">
+
+  <!-- Sources index — quiet, mono, secondary -->
+  <aside class="sticky top-10 self-start">
+    <div class="font-mono text-xs uppercase tracking-wider text-ink-muted mb-3">Sources</div>
+    <ul class="space-y-2">
+      {% for doc in session.documents.all %}
+      <li class="font-mono text-xs text-ink-muted truncate" title="{{ doc.filename }}">
+        <span class="text-ink-muted">▸</span> {{ doc.filename }}
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <!-- Main synthesis panel -->
+  <div class="space-y-12">
+
+    <!-- Overall summary -->
+    <section>
+      <p class="font-body text-lg leading-relaxed text-ink">
+        {{ synthesis.overall_summary }}
+      </p>
+    </section>
+
+    <!-- Recurring themes -->
+    <section>
+      <h2 class="font-display text-xl mb-5">Recurring themes</h2>
+      <div class="space-y-4">
+        {% for theme in synthesis.recurring_themes %}
+        <div class="bg-white border border-rule rounded-lg p-5">
+          <div class="flex items-baseline justify-between mb-2">
+            <h3 class="font-body font-semibold text-ink">{{ theme.label }}</h3>
+            <span class="font-mono text-xs text-ink-muted">
+              {{ theme.appears_in|length }} doc{{ theme.appears_in|length|pluralize }}
+            </span>
+          </div>
+          <p class="font-body text-sm text-ink-muted leading-relaxed">
+            {{ theme.synthesis }}
+          </p>
+          <div class="font-mono text-xs text-ink-muted mt-3">
+            {% for doc_id in theme.appears_in %}<span class="quote-highlight mr-1">{{ doc_id }}</span>{% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Contradictions — the flag color, used nowhere else -->
+    {% if synthesis.contradictions %}
+    <section>
+      <h2 class="font-display text-xl mb-5 flex items-center gap-2">
+        Contradictions
+        <span class="font-mono text-xs text-flag border border-flag rounded-full px-2 py-0.5">
+          {{ synthesis.contradictions|length }}
+        </span>
+      </h2>
+      <div class="space-y-3">
+        {% for c in synthesis.contradictions %}
+        <div class="border-l-2 border-flag pl-4 py-1">
+          <p class="font-body text-sm text-ink">{{ c.description }}</p>
+          <p class="font-mono text-xs text-ink-muted mt-1">
+            {{ c.sources|join:", " }}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Per-document evidence — where quotes get the highlighter treatment -->
+    <section>
+      <h2 class="font-display text-xl mb-5">Evidence by document</h2>
+      <div class="space-y-8">
+        {% for doc in session.documents.all %}
+        <div>
+          <div class="font-mono text-xs uppercase tracking-wider text-ink-muted mb-3">
+            {{ doc.filename }}
+          </div>
+          <div class="space-y-3">
+            {% for theme in doc.extraction.themes %}
+            <div class="pl-4 border-l border-rule">
+              <span class="font-body text-sm text-ink-muted">{{ theme.label }}:</span>
+              <span class="quote-highlight font-body text-sm text-ink">
+                "{{ theme.supporting_quote }}"
+              </span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}

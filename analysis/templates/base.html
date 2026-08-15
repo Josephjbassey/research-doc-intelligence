@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Research Doc Intelligence{% endblock %}</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          paper: '#EFEEE7',
+          ink: '#1C2230',
+          'ink-muted': '#5B6273',
+          highlight: '#F4C542',
+          flag: '#B8433A',
+          rule: '#DAD7CC',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['IBM Plex Sans', 'sans-serif'],
+          mono: ['IBM Plex Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  /* Signature element: hand-drawn-feeling highlighter mark behind quote text.
+     Used ONLY on extracted evidence quotes — nowhere else. */
+  .quote-highlight {
+    background-image: linear-gradient(104deg, transparent 0.5%, #F4C542 0.5%, #F4C542 95%, transparent 95.5%);
+    background-repeat: no-repeat;
+    background-size: 100% 55%;
+    background-position: 0 65%;
+    padding: 0 2px;
+  }
+  body { -webkit-font-smoothing: antialiased; }
+</style>
+</head>
+<body class="bg-paper text-ink font-body min-h-screen">
+  <header class="border-b border-rule">
+    <div class="max-w-5xl mx-auto px-6 py-5 flex items-baseline justify-between">
+      <a href="/" class="font-display text-xl tracking-tight">Research Doc Intelligence</a>
+      <span class="font-mono text-xs text-ink-muted uppercase tracking-wider">Impact Forge 2026</span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
