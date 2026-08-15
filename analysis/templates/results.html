@@ -65,14 +65,16 @@
     </section>
 
     <!-- Contradictions — the flag color, used nowhere else -->
-    {% if synthesis.contradictions %}
     <section class="reveal">
       <h2 class="font-display text-xl mb-5 flex items-center gap-2">
         Contradictions
+        {% if synthesis.contradictions %}
         <span class="font-mono text-xs text-flag border border-flag rounded-full px-2 py-0.5 pulse-flag">
           {{ synthesis.contradictions|length }}
         </span>
+        {% endif %}
       </h2>
+      {% if synthesis.contradictions %}
       <div class="space-y-3">
         {% for c in synthesis.contradictions %}
         <div class="border-l-2 border-flag pl-4 py-1 card-hover">
@@ -83,8 +85,15 @@
         </div>
         {% endfor %}
       </div>
+      {% else %}
+      <div class="border-l-2 border-rule pl-4 py-2">
+        <p class="font-body text-sm text-ink-muted">
+          No contradictions detected — these sources are broadly aligned.
+          The pipeline is built to flag disagreement when it exists.
+        </p>
+      </div>
+      {% endif %}
     </section>
-    {% endif %}
 
     <!-- Per-document evidence — where quotes get the highlighter treatment -->
     <section class="reveal">

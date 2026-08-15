@@ -106,8 +106,16 @@ def _run_analysis_pipeline(session):
             )
 
     # --- Step 2: Per-document aggregation ---
+    # Use sequential labels (doc_1, doc_2, ...) — NOT database IDs — so the
+    # LLM's appears_in/sources references are stable and human-readable.
+    # We build a mapping so we can translate labels back to filenames after synthesis.
+    doc_label_map = {}  # "doc_1" -> "interview_01_remote_work.txt"
     doc_extractions = []
-    for doc in documents:
+
+    for i, doc in enumerate(documents, 1):
+        label = f"doc_{i}"
+        doc_label_map[label] = doc.title
+
         all_themes = []
         all_flags = []
         stances = []
@@ -138,7 +146,7 @@ def _run_analysis_pipeline(session):
         )
 
         doc_extractions.append({
-            "doc_id": f"doc_{doc.id}",
+            "doc_id": label,
             "doc_title": doc.title,
             "themes": [
                 {"label": t.get("label", ""), "description": t.get("description", ""), "quote": t.get("supporting_quote", "")}
@@ -160,12 +168,40 @@ def _run_analysis_pipeline(session):
             max_tokens=4000,
         )
 
+        # Map LLM doc labels back to actual filenames so the UI never
+        # shows internal IDs like "doc_5" when the filename is "draft-one.docx"
+        import re as _re
+
+        def _replace_labels(text):
+            """Replace doc_N labels (case-insensitive) with filenames in prose."""
+            if not text:
+                return text
+            for label, filename in doc_label_map.items():
+                # Case-insensitive replace: doc_1, Doc_1, DOC_1 -> filename
+                text = _re.sub(_re.escape(label), filename, text, flags=_re.IGNORECASE)
+            return text
+
+        recurring = synth_result.get("recurring_themes", [])
+        for theme in recurring:
+            theme["appears_in"] = [
+                doc_label_map.get(d, d) for d in theme.get("appears_in", [])
+            ]
+
+        contradictions = synth_result.get("contradictions", [])
+        for c in contradictions:
+            c["sources"] = [
+                doc_label_map.get(s, s) for s in c.get("sources", [])
+            ]
+            c["description"] = _replace_labels(c.get("description", ""))
+
+        summary = _replace_labels(synth_result.get("overall_summary", ""))
+
         Synthesis.objects.update_or_create(
             session=session,
             defaults={
-                "recurring_themes_json": json.dumps(synth_result.get("recurring_themes", [])),
-                "contradictions_json": json.dumps(synth_result.get("contradictions", [])),
-                "overall_summary": synth_result.get("overall_summary", ""),
+                "recurring_themes_json": json.dumps(recurring),
+                "contradictions_json": json.dumps(contradictions),
+                "overall_summary": summary,
             },
         )
     else:
