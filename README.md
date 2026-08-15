@@ -8,10 +8,12 @@ Built for **Impact Forge Summer 2026 — Computational Research Track**.
 
 ## What It Does
 
-1. **Upload** 1+ documents (`.txt` or `.docx`)
+1. **Upload** 1+ documents (`.txt` or `.docx`) — drag-and-drop or browse
 2. **Per-document analysis**: extracted themes, supporting quotes, stance/sentiment, notable flags
 3. **Cross-document synthesis**: recurring themes across sources, contradictions/tensions, overall summary
 4. **Export** the full analysis as a formatted `.docx` report
+
+The entire pipeline runs in one step — upload your files and the analysis completes automatically, no intermediate steps.
 
 ## Architecture
 
@@ -40,18 +42,27 @@ Built for **Impact Forge Summer 2026 — Computational Research Track**.
 |-------|--------|----------------|
 | Ingestion | `analysis/ingestion.py` | Parse `.txt`/`.docx`, split into ~1800-word chunks |
 | Extraction | `analysis/llm_client.py` + `analysis/prompts.py` | Per-chunk LLM call → structured JSON (themes, quotes, stance) |
-| Aggregation | `analysis/views.py` (`run_analysis`) | Merge chunk extractions into per-document summary |
+| Aggregation | `analysis/views.py` (`_run_analysis_pipeline`) | Merge chunk extractions into per-document summary |
 | Synthesis | `analysis/llm_client.py` + `analysis/prompts.py` | Cross-document LLM call → recurring themes + contradictions |
 | Export | `analysis/export.py` | Generate formatted `.docx` report |
 
 ### Tech Stack
 
-- **Backend:** Django 5+, Python 3.11+
-- **Frontend:** Django templates + Tailwind CSS (CDN)
+- **Backend:** Django, Python 3.11+
+- **Frontend:** Django templates + Tailwind CSS (Play CDN) + HTMX
 - **LLM:** `zai-org/GLM-5.2` via Featherless.ai (OpenAI-compatible API)
 - **Document parsing/export:** `python-docx`
 - **Database:** SQLite
 - **Caching:** Filesystem cache (`responses/{sha256}.json`) — avoids re-spending tokens on repeated dev runs
+
+### Design Language
+
+The UI follows an editorial/manuscript aesthetic — a research paper, not a SaaS dashboard.
+
+- **Typography:** Fraunces (display/headings), IBM Plex Sans (body), IBM Plex Mono (source labels, doc IDs, citations)
+- **Palette:** Paper (`#EFEEE7`) background, Ink (`#1C2230`) text, Highlight (`#F4C542`) for the signature highlighter mark, Flag (`#B8433A`) for contradictions only, Rule (`#DAD7CC`) for hairlines/borders
+- **Signature element:** Extracted evidence quotes get a literal highlighter mark — an amber swipe behind the text, the way a researcher would mark up a printed transcript. This is the one bold visual move, directly justified by what the tool does (surfacing evidence).
+- **Micro-animations:** Staggered entrance fades, scroll-triggered section reveals (IntersectionObserver), highlighter-mark sweep-in on quotes, card hover lifts, pulsing contradiction badge, loading overlay with spinner during analysis, drag-over state on the upload zone. All animations respect `prefers-reduced-motion`.
 
 ## Setup
 
@@ -96,11 +107,10 @@ Open http://127.0.0.1:8000 in your browser.
 
 ## Usage
 
-1. On the home page, enter an analysis title and select 1+ `.txt` or `.docx` files
-2. Click **Upload & Prepare** — documents are parsed and chunked
-3. Click **Run Full Analysis** — the pipeline runs per-chunk extraction, aggregation, and synthesis
-4. View results: per-document themes/quotes, cross-document recurring themes, contradictions
-5. Click **Download .docx Report** for a formatted export
+1. On the home page, select 1+ `.txt` or `.docx` files (drag-and-drop or browse)
+2. Click **Analyze documents** — the full pipeline runs automatically (extraction → aggregation → synthesis)
+3. View results: overall summary, cross-document recurring themes, contradictions, per-document evidence with highlighted quotes
+4. Click **Export report** to download a formatted `.docx` report
 
 ### Sample Data
 
@@ -115,24 +125,23 @@ research-doc-intelligence/
 ├── .env.example
 ├── .gitignore
 ├── README.md
+├── TECHNICAL_WRITEUP.md
 ├── core/
 │   ├── settings.py          # Django settings + env config
 │   ├── urls.py              # Root URL config
 │   └── wsgi.py
 ├── analysis/
 │   ├── models.py            # Session, Document, Chunk, Extraction, DocSummary, Synthesis
-│   ├── views.py             # Upload, run_analysis, results, export
+│   ├── views.py             # Upload+analyze, results, export
 │   ├── ingestion.py         # File parsing + chunking
-│   ├── llm_client.py        # Featherless API calls + filesystem caching
+│   ├── llm_client.py        # Featherless API calls + filesystem caching + IPv4 fix
 │   ├── export.py            # .docx report generation
 │   ├── prompts.py           # Prompt A (extraction) + Prompt B (synthesis)
 │   ├── urls.py              # App URL routes
 │   └── templates/
-│       └── analysis/
-│           ├── base.html     # Layout shell (Tailwind CDN)
-│           ├── index.html    # Upload form + session list
-│           ├── detail.html   # Session overview + run analysis
-│           └── results.html  # Full results display
+│       ├── base.html         # Layout shell, Tailwind config, fonts, animations, loading overlay
+│       ├── upload.html       # Upload form with drag-drop + file list
+│       └── results.html      # Synthesis results with themes, contradictions, evidence
 ├── responses/                # Gitignored — LLM response cache
 └── sample_data/              # 3 demo transcripts
     ├── interview_01_remote_work.txt
@@ -148,6 +157,10 @@ The app uses two prompts:
 - **Prompt B (Cross-document synthesis):** Takes all per-document extractions and identifies recurring themes (appearing in 2+ docs), contradictions, and produces an overall summary.
 
 All LLM responses are cached by SHA256 hash of (system prompt + user prompt) in `responses/`. Re-running analysis on the same text returns instantly without API calls — essential for iterative development without burning tokens.
+
+### Networking Note
+
+The LLM client forces IPv4 via a `urllib3.util.connection.allowed_gai_family` monkey-patch. This machine has no IPv6 route, and without the fix `requests`/`urllib3` tries IPv6 addresses first (which hang until timeout) instead of falling back to IPv4. The fix is in `analysis/llm_client.py` at the top of the file.
 
 ## Author
 
