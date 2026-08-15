@@ -2,7 +2,7 @@
 {% block title %}Results — Research Doc Intelligence{% endblock %}
 
 {% block content %}
-<div class="flex items-start justify-between mb-8 pb-6 border-b border-rule">
+<div class="flex items-start justify-between mb-8 pb-6 border-b border-rule anim-fade-up" style="--delay: 0s">
   <div>
     <h1 class="font-display text-3xl">Synthesis</h1>
     <p class="font-mono text-xs text-ink-muted mt-1">
@@ -10,20 +10,21 @@
     </p>
   </div>
   <a href="{% url 'export_report' session.id %}"
-     class="font-mono text-xs uppercase tracking-wider border border-ink px-4 py-2.5
-            rounded-md hover:bg-ink hover:text-paper transition-colors">
-    Export report ↓
+     class="group font-mono text-xs uppercase tracking-wider border border-ink px-4 py-2.5
+            rounded-md hover:bg-ink hover:text-paper transition-all duration-200
+            active:scale-95">
+    Export report <span class="arrow-nudge inline-block">↓</span>
   </a>
 </div>
 
 <div class="grid grid-cols-[180px_1fr] gap-10">
 
   <!-- Sources index — quiet, mono, secondary -->
-  <aside class="sticky top-10 self-start">
+  <aside class="sticky top-10 self-start anim-slide-left" style="--delay: 0.15s">
     <div class="font-mono text-xs uppercase tracking-wider text-ink-muted mb-3">Sources</div>
     <ul class="space-y-2">
       {% for doc in session.documents.all %}
-      <li class="font-mono text-xs text-ink-muted truncate" title="{{ doc.filename }}">
+      <li class="font-mono text-xs text-ink-muted truncate anim-slide-left" style="--delay: {{ forloop.counter0|add:'2' }}00ms" title="{{ doc.filename }}">
         <span class="text-ink-muted">▸</span> {{ doc.filename }}
       </li>
       {% endfor %}
@@ -34,18 +35,18 @@
   <div class="space-y-12">
 
     <!-- Overall summary -->
-    <section>
+    <section class="reveal">
       <p class="font-body text-lg leading-relaxed text-ink">
         {{ synthesis.overall_summary }}
       </p>
     </section>
 
     <!-- Recurring themes -->
-    <section>
+    <section class="reveal">
       <h2 class="font-display text-xl mb-5">Recurring themes</h2>
       <div class="space-y-4">
         {% for theme in synthesis.recurring_themes %}
-        <div class="bg-white border border-rule rounded-lg p-5">
+        <div class="bg-white border border-rule rounded-lg p-5 card-hover">
           <div class="flex items-baseline justify-between mb-2">
             <h3 class="font-body font-semibold text-ink">{{ theme.label }}</h3>
             <span class="font-mono text-xs text-ink-muted">
@@ -56,7 +57,7 @@
             {{ theme.synthesis }}
           </p>
           <div class="font-mono text-xs text-ink-muted mt-3">
-            {% for doc_id in theme.appears_in %}<span class="quote-highlight mr-1">{{ doc_id }}</span>{% endfor %}
+            {% for doc_id in theme.appears_in %}<span class="quote-highlight-anim mr-1" style="--delay: {{ forloop.counter|add:'3' }}00ms">{{ doc_id }}</span>{% endfor %}
           </div>
         </div>
         {% endfor %}
@@ -65,16 +66,16 @@
 
     <!-- Contradictions — the flag color, used nowhere else -->
     {% if synthesis.contradictions %}
-    <section>
+    <section class="reveal">
       <h2 class="font-display text-xl mb-5 flex items-center gap-2">
         Contradictions
-        <span class="font-mono text-xs text-flag border border-flag rounded-full px-2 py-0.5">
+        <span class="font-mono text-xs text-flag border border-flag rounded-full px-2 py-0.5 pulse-flag">
           {{ synthesis.contradictions|length }}
         </span>
       </h2>
       <div class="space-y-3">
         {% for c in synthesis.contradictions %}
-        <div class="border-l-2 border-flag pl-4 py-1">
+        <div class="border-l-2 border-flag pl-4 py-1 card-hover">
           <p class="font-body text-sm text-ink">{{ c.description }}</p>
           <p class="font-mono text-xs text-ink-muted mt-1">
             {{ c.sources|join:", " }}
@@ -86,19 +87,19 @@
     {% endif %}
 
     <!-- Per-document evidence — where quotes get the highlighter treatment -->
-    <section>
+    <section class="reveal">
       <h2 class="font-display text-xl mb-5">Evidence by document</h2>
       <div class="space-y-8">
         {% for doc in session.documents.all %}
-        <div>
+        <div class="reveal">
           <div class="font-mono text-xs uppercase tracking-wider text-ink-muted mb-3">
             {{ doc.filename }}
           </div>
           <div class="space-y-3">
             {% for theme in doc.extraction.themes %}
-            <div class="pl-4 border-l border-rule">
+            <div class="pl-4 border-l border-rule lift">
               <span class="font-body text-sm text-ink-muted">{{ theme.label }}:</span>
-              <span class="quote-highlight font-body text-sm text-ink">
+              <span class="quote-highlight-anim font-body text-sm text-ink" style="--delay: {{ forloop.counter|add:'2' }}00ms">
                 "{{ theme.supporting_quote }}"
               </span>
             </div>

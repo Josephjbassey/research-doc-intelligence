@@ -34,8 +34,7 @@
 </script>
 
 <style>
-  /* Signature element: hand-drawn-feeling highlighter mark behind quote text.
-     Used ONLY on extracted evidence quotes — nowhere else. */
+  /* ── Signature element: highlighter mark ────────────────────── */
   .quote-highlight {
     background-image: linear-gradient(104deg, transparent 0.5%, #F4C542 0.5%, #F4C542 95%, transparent 95.5%);
     background-repeat: no-repeat;
@@ -43,11 +42,148 @@
     background-position: 0 65%;
     padding: 0 2px;
   }
+
+  /* Animated variant — the mark sweeps in like a real highlighter stroke */
+  .quote-highlight-anim {
+    background-image: linear-gradient(104deg, transparent 0.5%, #F4C542 0.5%, #F4C542 95%, transparent 95.5%);
+    background-repeat: no-repeat;
+    background-size: 0% 55%;
+    background-position: 0 65%;
+    padding: 0 2px;
+    animation: highlightSweep 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes highlightSweep {
+    from { background-size: 0% 55%; }
+    to   { background-size: 100% 55%; }
+  }
+
+  /* ── Entrance animations ────────────────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .anim-fade-up {
+    opacity: 0;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: var(--delay, 0s);
+  }
+  .anim-fade {
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+    animation-delay: var(--delay, 0s);
+  }
+  .anim-slide-left {
+    opacity: 0;
+    animation: slideInLeft 0.4s ease forwards;
+    animation-delay: var(--delay, 0s);
+  }
+
+  /* ── Scroll-triggered reveal (IntersectionObserver) ─────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Hover effects ──────────────────────────────────────────── */
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(28, 34, 48, 0.06);
+    border-color: #5B6273;
+  }
+
+  .lift {
+    transition: transform 0.15s ease;
+  }
+  .lift:hover {
+    transform: translateY(-1px);
+  }
+
+  .arrow-nudge {
+    transition: transform 0.2s ease;
+  }
+  .group:hover .arrow-nudge {
+    transform: translateX(4px);
+  }
+
+  /* ── Loading overlay ────────────────────────────────────────── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(239, 238, 231, 0.92);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .loading-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #DAD7CC;
+    border-top-color: #1C2230;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Pulse for contradiction badge ──────────────────────────── */
+  @keyframes pulseFlag {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184, 67, 58, 0.3); }
+    50%      { box-shadow: 0 0 0 4px rgba(184, 67, 58, 0); }
+  }
+  .pulse-flag {
+    animation: pulseFlag 2s ease-in-out infinite;
+  }
+
+  /* ── Drag-over state ────────────────────────────────────────── */
+  .drag-active {
+    border-color: #F4C542 !important;
+    background: rgba(244, 197, 66, 0.04);
+    transform: scale(1.01);
+  }
+
   body { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body class="bg-paper text-ink font-body min-h-screen">
-  <header class="border-b border-rule">
+  <header class="border-b border-rule anim-fade" style="--delay: 0s">
     <div class="max-w-5xl mx-auto px-6 py-5 flex items-baseline justify-between">
       <a href="/" class="font-display text-xl tracking-tight">Research Doc Intelligence</a>
       <span class="font-mono text-xs text-ink-muted uppercase tracking-wider">Impact Forge 2026</span>
@@ -57,5 +193,40 @@
   <main class="max-w-5xl mx-auto px-6 py-10">
     {% block content %}{% endblock %}
   </main>
+
+  <!-- Loading overlay — shown during analysis -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="text-center">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="font-display text-lg text-ink">Analyzing documents…</p>
+      <p class="font-mono text-xs text-ink-muted mt-1">Extracting themes, quotes, and cross-document synthesis</p>
+    </div>
+  </div>
+
+  <script>
+    // Scroll-triggered reveals via IntersectionObserver
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      // Observe all .reveal elements after DOM is ready
+      function init() {
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          observer.observe(el);
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
 </body>
 </html>
