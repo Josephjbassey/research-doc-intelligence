@@ -1,0 +1,33 @@
+Interview Transcript — Participant 1
+Study: Remote Work Experiences in Tech Industry
+Date: March 15, 2024
+Interviewer: Research Team
+Duration: 42 minutes
+
+Interviewer: Thanks for joining today. Can you start by telling me about your current role and how long you've been working remotely?
+
+Participant 1: Sure. I'm a senior software engineer at a mid-size fintech company. I've been fully remote for about three years now, since well before the pandemic. Before that I was in an office for about six years. So I've seen both sides of it pretty thoroughly.
+
+Interviewer: What would you say has been the biggest benefit of remote work for you?
+
+Participant 1: Honestly, the flexibility is huge. I can structure my day around when I'm most productive. I'm a morning person, so I start early, get my deep work done before lunch, and then use the afternoons for meetings and lighter tasks. That wouldn't be possible in an office where everyone's expected to be online from 9 to 5. I also save about two hours a day not commuting, which I've reinvested into exercise and family time. My mental health is genuinely better.
+
+Interviewer: And what about the downsides? What do you miss about the office?
+
+Participant 1: The spontaneous interactions, for sure. In an office, you bump into someone in the kitchen and end up having a conversation that solves a problem you didn't even know you needed to solve. That doesn't happen on Slack. We try to replicate it with virtual coffee chats but it feels forced. I also think onboarding new people is harder — there's a lot of tacit knowledge that gets passed by osmosis in an office that just doesn't transfer over video calls.
+
+Interviewer: How has your team handled collaboration and communication?
+
+Participant 1: It's a mixed bag. We use Slack for async stuff and Zoom for meetings. The problem is that some people default to scheduling a meeting for everything, when a Slack message would do. I probably spend 15-20 hours a week in meetings, which is too many. We've tried having "no meeting days" but they don't really get respected. The culture of always being available on Slack is also exhausting — there's an expectation that you respond within minutes, which means you can never fully focus.
+
+Interviewer: Do you feel connected to your colleagues?
+
+Participant 1: To my immediate team, yes. We've worked together long enough that we have rapport. But I barely know anyone outside my team. In an office, you'd meet people from other departments naturally. Now I couldn't pick half my colleagues out of a lineup. I think that limits cross-team collaboration and makes the company feel smaller than it is.
+
+Interviewer: How do you feel about the possibility of returning to the office, even part-time?
+
+Participant 1: I'd be open to one or two days a week, honestly. I miss the energy of being around people. But I'd quit if they forced five days a week. The productivity loss from commuting and office distractions would be significant. I think hybrid is the sweet spot — you get the best of both worlds. The key is being intentional about what you do in the office versus at home. Office days should be for collaboration and social connection, not sitting on Zoom calls in a different building.
+
+Interviewer: Any final thoughts on how remote work has affected your career trajectory?
+
+Participant 1: That's an interesting question. I think remote work has actually accelerated my career in some ways — I've been able to take on more responsibility because I'm not limited by geography. But I also wonder if I'm missing out on the visibility that comes from being physically present with leadership. There's definitely a "out of sight, out of mind" risk. I've had to be more deliberate about making sure my work is seen and recognized. It's not enough to just do good work anymore — you have to make sure people know about it.

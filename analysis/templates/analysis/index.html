@@ -1,0 +1,51 @@
+{% extends "analysis/base.html" %}
+
+{% block content %}
+<div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Research Document Intelligence</h1>
+    <p class="text-gray-600">Upload qualitative research documents and get structured thematic analysis with cross-document synthesis.</p>
+</div>
+
+<!-- Upload form -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Upload Documents</h2>
+    <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Analysis Title</label>
+            <input type="text" name="title" placeholder="e.g., Interview Study on Remote Work"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Documents (.txt or .docx)</label>
+            <input type="file" name="files" multiple accept=".txt,.docx"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                   required>
+            <p class="text-xs text-gray-400 mt-1">Select one or more files. Each will be analyzed independently, then synthesized together.</p>
+        </div>
+        <button type="submit"
+                class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition font-medium">
+            Upload & Prepare
+        </button>
+    </form>
+</div>
+
+<!-- Past sessions -->
+{% if sessions %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Recent Analyses</h2>
+    <div class="space-y-2">
+        {% for s in sessions %}
+        <a href="{% url 'analysis_detail' s.id %}"
+           class="block p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition">
+            <div class="flex justify-between items-center">
+                <span class="font-medium text-gray-700">{{ s.title }}</span>
+                <span class="text-sm text-gray-400">{{ s.created_at|date:"M d, H:i" }}</span>
+            </div>
+            <div class="text-sm text-gray-500">{{ s.document_count }} document{{ s.document_count|pluralize }}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

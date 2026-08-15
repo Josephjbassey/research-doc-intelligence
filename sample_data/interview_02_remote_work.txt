@@ -1,0 +1,37 @@
+Interview Transcript — Participant 2
+Study: Remote Work Experiences in Tech Industry
+Date: March 18, 2024
+Interviewer: Research Team
+Duration: 35 minutes
+
+Interviewer: Thanks for participating. Can you tell us about your role and remote work experience?
+
+Participant 2: I'm a product manager at a SaaS startup. We went fully remote during the pandemic and never went back. Before that I was in offices for about eight years across three companies. I've been remote now for about four years.
+
+Interviewer: What's been the biggest advantage for you?
+
+Participant 2: Work-life balance, without a doubt. I have two young kids and being able to do school drop-off and pick-up, eat lunch with them, be around for bedtime — that's priceless. I don't think I could have this job and be the parent I want to be if I had to commute an hour each way. The flexibility isn't just about when I work, it's about being present for my family in a way that office work made impossible.
+
+Interviewer: And the challenges?
+
+Participant 2: The biggest one is the blur between work and home. When your office is your living room, you never really leave work. I find myself checking Slack at 9pm, responding to emails on weekends. There's no physical boundary that signals "work is over." I've had to be really disciplined about creating artificial boundaries — closing my laptop, putting it in a drawer, that kind of thing. But it's a constant struggle.
+
+Interviewer: How is communication and collaboration on your team?
+
+Participant 2: We're actually pretty good at async communication. We use Notion extensively for documentation, and most decisions get made in writing rather than in meetings. I think that's actually better than what we did in the office, where everything was a conversation that didn't get recorded. The downside is that written communication can lose nuance. I've had situations where a Slack message was read as angry or dismissive when that wasn't the intent at all. You lose the tone of voice, the facial expressions.
+
+Interviewer: Do you feel connected to your team?
+
+Participant 2: Yes, actually. We do a lot of virtual social stuff — game nights, show-and-tells, random chat channels. I think I know my immediate team better than I did at my old office job, honestly. But the broader company is a different story. I don't know anyone outside my product squad. Company-wide all-hands feel performative. I think the connection is deep but narrow — I have strong relationships with 6-7 people and almost none with the other 200 employees.
+
+Interviewer: What about career growth and visibility?
+
+Participant 2: This is my biggest concern, actually. In an office, you build relationships naturally with people outside your team, including leadership. You have hallway conversations, you grab coffee, you just exist in the same space. Remotely, if you're not on a project with someone, you basically don't exist to them. I've seen people get promoted who are more visible, not necessarily more capable. It's made me think about whether I need to be more strategic about which projects I take on, not for the work itself but for the visibility.
+
+Interviewer: Would you go back to the office?
+
+Participant 2: No. Not full-time. The flexibility is too important to me at this stage of my life. But I would do a company offsite once a quarter — a few days where the whole company gets together in person. I think those are incredibly valuable for building relationships and alignment. The day-to-day stuff can stay remote. I think the companies that will win are the ones that figure out how to do remote well, not the ones that force people back into offices.
+
+Interviewer: Any other thoughts?
+
+Participant 2: One thing I'd add is that remote work requires a different skill set. You have to be a better written communicator, you have to be more self-directed, you have to be comfortable with ambiguity. Not everyone thrives in that environment, and I think companies need to be honest about that in hiring. I've seen people struggle who were great in an office but couldn't adapt to remote work. It's not a universal good — it depends on the person and the role.

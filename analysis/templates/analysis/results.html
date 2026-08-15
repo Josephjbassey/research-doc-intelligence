@@ -1,0 +1,142 @@
+{% extends "analysis/base.html" %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-start">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ session.title }}</h1>
+        <p class="text-gray-500">Analysis Results — {{ session.created_at|date:"F d, Y H:i" }}</p>
+    </div>
+    <a href="{% url 'export_docx' session.id %}"
+       class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition font-medium text-sm">
+        Download .docx Report
+    </a>
+</div>
+
+<!-- Overall summary -->
+{% if synthesis and synthesis.overall_summary %}
+<div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-6">
+    <h2 class="text-lg font-semibold text-indigo-800 mb-2">Executive Summary</h2>
+    <p class="text-gray-700">{{ synthesis.overall_summary }}</p>
+</div>
+{% endif %}
+
+<!-- Per-document results -->
+<h2 class="text-xl font-bold text-gray-700 mb-4">Per-Document Analysis</h2>
+<div class="space-y-6 mb-8">
+    {% for item in docs_data %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ item.doc.title }}</h3>
+
+        {% if item.summary %}
+        <p class="text-gray-600 mb-3">{{ item.summary.summary_text }}</p>
+
+        {% if item.summary.stance %}
+        <p class="text-sm text-gray-500 mb-4">
+            <span class="font-medium">Stance:</span> {{ item.summary.stance }}
+        </p>
+        {% endif %}
+
+        <!-- Themes -->
+        {% if item.summary.all_themes %}
+        <div class="mb-4">
+            <h4 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Themes</h4>
+            <div class="space-y-3">
+                {% for theme in item.summary.all_themes %}
+                <div class="border-l-4 border-indigo-400 pl-3">
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-gray-700">{{ theme.label }}</span>
+                        {% if theme.confidence %}
+                        <span class="text-xs px-2 py-0.5 rounded
+                            {% if theme.confidence == 'high' %}bg-green-100 text-green-700
+                            {% elif theme.confidence == 'medium' %}bg-yellow-100 text-yellow-700
+                            {% else %}bg-red-100 text-red-700{% endif %}">
+                            {{ theme.confidence }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% if theme.description %}
+                    <p class="text-sm text-gray-600">{{ theme.description }}</p>
+                    {% endif %}
+                    {% if theme.supporting_quote %}
+                    <p class="text-sm text-gray-500 italic mt-1">"{{ theme.supporting_quote }}"</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Flags -->
+        {% if item.summary.all_flags %}
+        <div>
+            <h4 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Notable Flags</h4>
+            <ul class="list-disc list-inside text-sm text-gray-600">
+                {% for flag in item.summary.all_flags %}
+                <li>{{ flag }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% else %}
+        <p class="text-gray-400 italic">No analysis available for this document.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Cross-document synthesis -->
+{% if synthesis %}
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Cross-Document Synthesis</h2>
+
+    <!-- Recurring themes -->
+    {% if synthesis.recurring_themes %}
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-3">Recurring Themes</h3>
+        <div class="space-y-3">
+            {% for theme in synthesis.recurring_themes %}
+            <div class="border border-gray-200 rounded-md p-3">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-gray-700">{{ theme.label }}</span>
+                    <div class="flex gap-1">
+                        {% for src in theme.appears_in %}
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">{{ src }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600">{{ theme.synthesis }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Contradictions -->
+    {% if synthesis.contradictions %}
+    <div>
+        <h3 class="text-lg font-semibold text-gray-700 mb-3">Contradictions & Tensions</h3>
+        <div class="space-y-3">
+            {% for contra in synthesis.contradictions %}
+            <div class="border-l-4 border-red-400 pl-3">
+                <p class="text-gray-700">{{ contra.description }}</p>
+                <div class="flex gap-1 mt-1">
+                    {% for src in contra.sources %}
+                    <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">{{ src }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not synthesis.recurring_themes and not synthesis.contradictions %}
+    <p class="text-gray-400 italic">No cross-document patterns identified.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="text-center mt-8">
+    <a href="{% url 'index' %}" class="text-indigo-600 hover:text-indigo-800">← New Analysis</a>
+</div>
+{% endblock %}

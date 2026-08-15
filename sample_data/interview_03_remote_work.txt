@@ -1,0 +1,37 @@
+Interview Transcript — Participant 3
+Study: Remote Work Experiences in Tech Industry
+Date: March 22, 2024
+Interviewer: Research Team
+Duration: 38 minutes
+
+Interviewer: Thanks for joining. Can you tell us about your role and how long you've been working remotely?
+
+Participant 3: I'm a UX designer at a large enterprise tech company. We were hybrid before the pandemic — two days in office, three at home. Then we went fully remote for about two years, and now we're back to a mandated three days in office. So I've experienced the full spectrum: hybrid, fully remote, and back to hybrid. It's been a bit of a rollercoaster.
+
+Interviewer: Given that you've experienced all three modes, which did you prefer?
+
+Participant 3: Honestly, the fully remote period was the most productive time of my career. I got more done in those two years than the four years before combined. The lack of commute gave me back 10 hours a week. I could exercise, cook proper meals, and still get all my work done. My design work actually improved because I had more time for deep thinking and exploration. Design requires long stretches of uninterrupted focus, and the office is terrible for that.
+
+Interviewer: So why did your company mandate a return to office?
+
+Participant 3: The official line was about "collaboration and culture." Leadership felt that innovation happens when people are together. They cited studies about serendipitous encounters and team bonding. But honestly, I think it was driven by real estate costs — we have this huge office building that's sitting empty — and by older executives who are uncomfortable with managing people they can't see. It felt very top-down. There was no consultation with employees.
+
+Interviewer: How has the return to office affected you?
+
+Participant 3: My productivity has dropped significantly. I lose two hours a day to commuting. In the office, I'm constantly interrupted — people tap me on the shoulder, there are impromptu meetings, it's noisy. I do my deep design work at home now on my two remote days, and use office days for meetings and reviews. So the office has become a place where I do shallow work, which is the opposite of what leadership intended. I also resent paying for the commute and lunches out — it's effectively a pay cut.
+
+Interviewer: What about the social aspect? Do you value being back with colleagues?
+
+Participant 3: I do, actually. There are people I missed seeing. The hallway conversations are genuinely valuable for cross-team awareness. Last week I ran into someone from the engineering team and found out about a project that affects my work — that wouldn't have happened on Slack. So I see the value of in-person time. But three days is too many. One or two would give me the social connection without sacrificing so much productivity. The mandate feels like a sledgehammer when a scalpel would do.
+
+Interviewer: How do you feel about the communication culture at your company?
+
+Participant 3: It's messy. We have too many tools — Slack, Teams, email, Jira, Confluence — and no clear norms about what goes where. In the office, people default to walking over to your desk, which is disruptive. Remotely, people over-rely on Slack, which is also disruptive in a different way. The always-on culture is a real problem. I've started turning off notifications during focus blocks, but I get pushback for being "unresponsive." There's a fundamental tension between the need for focused work and the expectation of constant availability, and the company hasn't figured out how to resolve it.
+
+Interviewer: Has the return-to-office mandate affected morale?
+
+Participant 3: Absolutely. Morale is the lowest I've seen it in my seven years at the company. Several people on my team are actively job hunting. The feeling is that leadership doesn't trust us to manage our own time. We proved for two years that we could be productive remotely, and then they pulled us back anyway. It feels like a betrayal of trust. The people who are leaving are the ones with options — the most talented people — which I think will hurt the company in the long run.
+
+Interviewer: What would your ideal setup look like?
+
+Participant 3: Two days in office, three at home. Office days are for collaboration, reviews, social connection. Home days are for deep work. No notifications during focus blocks. Clear documentation norms so async communication actually works. And quarterly team offsites for deeper bonding. I think that would give us 90% of the benefits of in-person work with 90% of the benefits of remote work. The all-or-nothing approach — either fully remote or fully in office — is a false choice. The answer is somewhere in the middle, and companies that figure that out will have a massive advantage in attracting talent.
